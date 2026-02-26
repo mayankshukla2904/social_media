@@ -15,6 +15,12 @@ class ChatRoom(models.Model):
         related_name='chat_rooms',
         help_text="Users participating in this chat room"
     )
+    typing_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='typing_in_rooms',
+        blank=True,
+        help_text="Users currently typing in this chat room"
+    )
     created_at = models.DateTimeField(
         auto_now_add=True,
         help_text="When the chat room was created"
@@ -139,6 +145,22 @@ class Message(models.Model):
         blank=True,
         help_text="Type of the attached file"
     )
+    reply_to = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='replies',
+        help_text="Message this is a reply to"
+    )
+    is_edited = models.BooleanField(
+        default=False,
+        help_text="Whether the message has been edited"
+    )
+    is_deleted = models.BooleanField(
+        default=False,
+        help_text="Whether the message has been soft-deleted"
+    )
     updated_at = models.DateTimeField(auto_now=True) 
     class Meta:
         db_table = 'chat_message'
@@ -166,3 +188,51 @@ class Message(models.Model):
             self.is_read = True
             self.read_at = timezone.now()
             self.save(update_fields=['is_read', 'read_at'])
+
+
+class UserPresence(models.Model):
+    """Tracks user online/offline status."""
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='presence'
+    )
+    is_online = models.BooleanField(default=False)
+    last_seen = models.DateTimeField(default=timezone.now)
+    current_room = models.ForeignKey(
+        ChatRoom,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='present_users'
+    )
+
+    class Meta:
+        db_table = 'chat_userpresence'
+
+    def __str__(self):
+        status = "online" if self.is_online else "offline"
+        return f"{self.user.username} - {status}"
+
+
+class MessageReaction(models.Model):
+    """Tracks emoji reactions on messages."""
+    message = models.ForeignKey(
+        Message,
+        on_delete=models.CASCADE,
+        related_name='reactions'
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='message_reactions'
+    )
+    emoji = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'chat_messagereaction'
+        unique_together = ('message', 'user', 'emoji')
+
+    def __str__(self):
+        return f"{self.user.username} reacted {self.emoji} to message {self.message.id}"

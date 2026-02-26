@@ -4,12 +4,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
-from logging.models import SystemLog, UserRole, ModeratorAction
+from .models import SystemLog, UserRole, ModeratorAction
 from .serializers import (
     SystemLogSerializer, UserRoleSerializer, 
     ModeratorActionSerializer, AdminUserSerializer
 )
 from .permissions import IsSuperuserOrAdmin, IsModeratorOrAbove
+from posts.models import Post
+from moderation.models import Report
 from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta

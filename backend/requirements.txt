@@ -10,7 +10,7 @@ drf-yasg==1.21.7
 # Database
 psycopg2-binary==2.9.9
 redis==5.0.1
-messaging
+
 # Channels & WebSockets
 channels>=4.0.0
 channels-redis>=4.1.0
@@ -74,13 +74,5 @@ django-defender==0.9.7
 # Cache
 django-cacheops==7.0.2
 
-# Search
-django-elasticsearch-dsl==7.3.0
-
-# Performance
-django-silk==5.0.4
-
 # Add these if not already present
-psycopg2-binary>=2.9.1
-django-postgres-extensions>=0.9.3 
 drf-nested-routers

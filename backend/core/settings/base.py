@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'authentication.apps.AuthenticationConfig',
     'posts.apps.PostsConfig',
-    'media.apps.MediaConfig',
     'interactions.apps.InteractionsConfig',
     'search.apps.SearchConfig',
     'tags.apps.TagsConfig',

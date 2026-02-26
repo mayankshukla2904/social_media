@@ -1,7 +1,8 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from messaging.models import ChatRoom, Message, UserPresence, MessageReaction, Post
+from chat.models import ChatRoom, Message, UserPresence, MessageReaction
+from posts.models import Post
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 

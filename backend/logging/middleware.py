@@ -1,5 +1,5 @@
 from django.utils.deprecation import MiddlewareMixin
-from .models import SystemLog
+from admin_panel.models import SystemLog
 import json
 
 class LoggingMiddleware(MiddlewareMixin):
